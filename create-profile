@@ -2,28 +2,13 @@
 
 set -e
 
-# Creates a new user for git usage
-GIT_PROFILE_DIR="$HOME/.gitprofiles"
-username=
-email=
-name=
-# zshrc or bashrc or the likes
-shell_config=
-
-get_user_shell_profile_config() {
-  if [ $SHELL -eq "/usr/bin/zsh" ];then 
-    shell_config="$HOME/.zshrc"
-  elif [ $SHELL -eq "/usr/bin/bash" ]; then
-    shell_config="$HOME/.bashrc"
-  fi
-}
+source functions.sh
 
 get_variables() {
-  local username_ok=0
   # Create Username
   if [ -z "$username" ]; then
-    printf "Creating New User \n"
-    read -p "Username: " username
+    printf "Creating New User \nUsername: "
+    read username
   else
     # Basic Setup for most users
     printf "Creating User $username...\n"
@@ -33,18 +18,20 @@ get_variables() {
   do
 
     if [ -f "$GIT_PROFILE_DIR/$username" ]; then
-      echo "Username already exists. Pick another"
+      printf "Username already exists. Pick another\nUsername: "
       # Username can be passed from commandline
-      read -p "Username: " username
+      read username
     else
       break
     fi
   done
 
-  read -p "Enter Name (user.name): " name
+  printf "Enter Name (user.name): "
+  read name
 
   if [ -z "$email" ]; then
-    read -p "Email (user.email): " email
+    printf "Email (user.email): "
+    read email
   fi
 }
 
@@ -54,17 +41,9 @@ setup(){
   export GIT_CONFIG="$GIT_PROFILE_DIR/$username"
   git config user.name "$name"
   git config user.email "$email"
-  export_prefix="export GIT_CONFIG"
 
   #TODO store current config and restore if installation fails
-
-  if grep -Fq "$export_prefix" $shell_config
-  then
-    sed -i "s|.*export GIT_CONFIG.*|$export_prefix=$GIT_PROFILE_DIR/$username|" "$shell_config"
-  else
-    echo "Git Runas config"
-    echo "$export_prefix=$GIT_PROFILE_DIR/$username" >> $shell_config
-  fi
+  update_profile
   printf "Setup complete\nRunning as $username"
 }
 
@@ -83,9 +62,9 @@ case $key in
     shift 
     shift
     ;;
-    *)    # unknown option
+    *)    
     POSITIONAL+=("$1") # save it in an array for later
-    shift # past argument
+    shift 
     ;;
 esac
 done

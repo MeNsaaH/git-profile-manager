@@ -1,0 +1,20 @@
+#! /bin/bash
+
+set -e
+
+source functions.sh
+
+if [ $# -ne 0 ]; then
+  username="$1"
+else
+  printf "Username must be passed as argument, for example: git use-profile bash "
+  exit 1
+fi
+
+
+if [ ! -f "$GIT_PROFILE_DIR/$username" ]; then
+  echo "Username $1 does not exists. Use 'git create-profile' to create it"
+else
+  update_profile
+  printf "Profile Updated\nGit now running as $username"
+fi
