@@ -1,0 +1,19 @@
+#! /bin/bash
+
+set -e
+
+source functions.sh
+
+if [ $# -ne 0 ]; then
+  username="$1"
+else
+  printf "Username must be passed as argument, for example: git remove-profile bash "
+  exit 1
+fi
+
+if [ ! -f "$GIT_PROFILE_DIR/$username" ]; then
+  echo "Username $1 does not exists. Use 'git create-profile' to create it"
+else
+  rm $GIT_PROFILE_DIR/$username
+  printf "Profile $username deleted"
+fi
