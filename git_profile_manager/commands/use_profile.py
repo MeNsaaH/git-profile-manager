@@ -1,8 +1,8 @@
 import sys
 import os
 import argparse
-import utils 
-from common_args import parent_parser
+from git_profile_manager import utils 
+from git_profile_manager.common_args import parent_parser
 
 
 def use_profile(args):
@@ -12,17 +12,15 @@ def use_profile(args):
         sys.exit(1)
 
     utils.save_current_user_profile()
-    #TODO update current user files
     utils.set_active_user(args.username)
 
     print("Git is now using %s profile\n" % args.username)
         
 
-
-def main():
+def cmd():
     parser = argparse.ArgumentParser(
         description="Parses create-profile arguments",
-        prog="git create-profile",
+        prog="git use-profile",
         parents=[parent_parser,]
     )
     parser.add_argument(
@@ -32,6 +30,3 @@ def main():
 
     args = parser.parse_args()
     use_profile(args)
-
-if __name__ == "__main__":
-    main()

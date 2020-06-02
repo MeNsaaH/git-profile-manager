@@ -1,7 +1,7 @@
 import os
 import argparse
-import utils 
-from common_args import parent_parser
+from git_profile_manager import utils 
+from git_profile_manager.common_args import parent_parser
 
 
 def create_profile(args):
@@ -25,7 +25,7 @@ def create_profile(args):
     print("Profile %s created\nGit is now running as %s" % (args.username, args.username))
 
 
-def main():
+def cmd():
     parser = argparse.ArgumentParser(
         description="Parses create-profile arguments",
         prog="git create-profile",
@@ -46,6 +46,3 @@ def main():
 
     args = parser.parse_args()
     create_profile(args)
-
-if __name__ == "__main__":
-    main()

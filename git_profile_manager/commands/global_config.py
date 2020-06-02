@@ -1,7 +1,7 @@
 import os
 import argparse
-import utils 
-from common_args import parent_parser
+from git_profile_manager import utils 
+from git_profile_manager.common_args import parent_parser
 
 
 def global_config(args):
@@ -11,10 +11,10 @@ def global_config(args):
     print("DONE")
 
 
-def main():
+def cmd():
     parser = argparse.ArgumentParser(
         description="Parses current-profile arguments",
-        prog="git current-profile",
+        prog="git global-config",
         parents=[parent_parser,]
     )
 
@@ -30,6 +30,3 @@ def main():
 
     args = parser.parse_args()
     global_config(args)
-
-if __name__ == "__main__":
-    main()

@@ -1,8 +1,8 @@
 import sys
 import os
 import argparse
-import utils 
-from common_args import parent_parser
+from git_profile_manager import utils 
+from git_profile_manager.common_args import parent_parser
 
 
 def remove_profile(args):
@@ -31,20 +31,17 @@ def remove_profile(args):
     os.remove(utils.get_user_config_path(args.username))
     print("Profile %s deleted" % args.username)
 
-
-def main():
+def cmd():
     parser = argparse.ArgumentParser(
         description="Parses remove-profile command",
         prog="git remove-profile",
         parents=[parent_parser,]
     )
-
     parser.add_argument(
         "-f", "--force", 
         action="store_true",
         help="Username of user profile to be created"
     )
-
     parser.add_argument(
         "username", 
         help="User to be removed"
@@ -52,6 +49,3 @@ def main():
 
     args = parser.parse_args()
     remove_profile(args)
-
-if __name__ == "__main__":
-    main()
