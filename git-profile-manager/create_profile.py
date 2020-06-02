@@ -1,3 +1,4 @@
+import os
 import argparse
 import utils 
 from common_args import parent_parser
@@ -11,16 +12,17 @@ def create_profile(args):
     if not args.name:
         args.name = utils.user_input("Enter name (user.name): ")
 
-    while user_exists(args.username):
+    while utils.user_exists(args.username):
         args.username = utils.user_input("Username already exists.\nEnter username: ").lower()
 
     print("Setting up User Profile ....\n")
-    os.environ["GIT_CONFIG"] = utils.get_user_config()
+    os.environ["GIT_CONFIG"] = utils.get_user_config_path(args.username)
 
-    utils.exec_command("git config user.name %s" % args.username)
-    utils.exec_command("git config user.email %s" % args.email)
+    utils.exec_command(["git", "config", "user.email", "%s" % args.email])
+    utils.exec_command(["git", "config", "user.name", "%s" % args.username])
 
-    update_current_user(username)
+    utils.set_active_user(args.username)
+    print("Profile %s created\nGit is now running as %s" % (args.username, args.username))
 
 
 def main():
