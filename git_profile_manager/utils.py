@@ -1,4 +1,5 @@
 """ Utility functions """
+
 import os
 import shutil
 import configparser
@@ -6,7 +7,6 @@ import sys
 import subprocess
 
 
-SHELL = os.getenv("SHELL", "")
 HOME =  os.path.expanduser("~")
 # Directory to store all git-profile-manager config
 GIT_PROFILE_DIR = os.path.join(HOME, ".gitprofiles")
@@ -24,17 +24,6 @@ def get_user_config_path(username):
 def user_exists(username):
     """ A user exists if the corresponding config file is present """
     return os.path.exists(get_user_config_path(username))
-
-def get_unix_profile():
-    """ get the profiles for the shell """
-    profiles = []
-    if "zsh" in SHELL:
-        profile = os.path.join(HOME, ".zshrc")
-
-    bash_profile = os.path.join(HOME, ".bashrc")
-    if os.path.exists(bash_profile):
-        profiles.append(bash_profile)
-    return profiles
 
 def user_input(prompt):
     """ User input string for python independent version """
@@ -120,3 +109,14 @@ def save_current_user_profile():
         current_config.write(configfile)
 
     
+def setup():
+    """ 
+    Setup user machine for git-profile-manager. This backups the current config as global config, creates the necessary files
+    """
+    # create GIT_PROFILE_DIR and backup only when it doesn't exist. If it does, user may be upgrading
+    if not os.path.exists(GIT_PROFILE_DIR):
+        os.makedirs(GIT_PROFILE_DIR)
+
+        if os.path.isfile(GIT_CONFIG):
+            shutil.copyfile(GIT_CONFIG, GLOBAL_GITCONFIG)
+

@@ -1,5 +1,5 @@
-import re
 import setuptools
+from setuptools.command.install import install
 from git_profile_manager.__version__ import __version__
 
 REQUIRED_PYTHON = (3, 0)
@@ -7,13 +7,19 @@ REQUIRED_PYTHON = (3, 0)
 with open("README.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
 
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+    def run(self):
+        install.run(self)
+        # Setup git-profile-manager
+        git_profile_manager.setup()
 
 setuptools.setup(
     name="git-profile-manager",
     version=__version__,
     author='Mmadu Manasseh',
     author_email="mmadumanasseh@gmail.com",
-    description="",
+    description="A git extension to allow you manage multiple git profiles on your workstation",
     url="https://github.com/MeNsaaH/git-profile-manager",
     project_urls={
         "Source": "https://github.com/MeNsaaH/git-profile-manager",
@@ -22,6 +28,9 @@ setuptools.setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     license="MIT",
+    cmdclass={
+        'install': PostInstallCommand,
+    },
     entry_points={'console_scripts': [
         'git-create-profile=git_profile_manager.commands.create_profile:cmd',
         'git-remove-profile=git_profile_manager.commands.remove_profile:cmd',
