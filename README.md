@@ -3,22 +3,16 @@ A git extension to allow you manage multiple git profiles on your workstation. U
 
 
 ## Installation
+Git Profile Manager is dependent on python 3
 
-To install or update git-profile-manager, you should run the install script. To do that, you may either download and run the script manually, or use the following cURL or Wget command:
-
-```bash 
-  curl -o- https://raw.githubusercontent.com/mensaah/git-profile-manager/master/install.sh | bash
-```
+### using Pip
+Git-profile-manager can be installed using the python `pip` tool.
 
 ```bash
-  wget -qO- https://raw.githubusercontent.com/mensaah/git-profile-manager/master/install.sh | bash
-```
-Running either of the above commands downloads a script and runs it. The script clones the git-remote-manager repository to `~/.gitprofiles/bin`, and attempts to add the source lines from the snippet below to the correct profile file (`~/.bash_profile`, `~/.zshrc`, `~/.profile`, or `~/.bashrc`).
+pip install git-profile-manager
+````
 
-```bash
-  export GIT_PROFILE_BIN_DIR="$HOME/.gitprofiles/bin"  && \. "$GIT_PROFILE_BIN_DIR/profile-manager.sh" # This loads git-profile-manager
-```
-
+It can also be installed using install script. To do that, you may either download and run the script manually, or use the following cURL or Wget command:
 
 NOTE: After installation, your current git config will be used as a shared configuration. All users inherit from the configuration
 
@@ -68,10 +62,13 @@ To get the Current Profile:
 ```bash
   git current-profile
 ```
+### List Profiles
+To list the Current Profile:
+
+```bash
+  git list-profiles
+```
 
 ## TODO
-- [x] Autosource shell environment after running each command
 - [ ] Add bash completions
-- [ ] Add support for other shells
-- [ ] Add windows support if possible
-- [x] Unset GIT_CONFIG env if current profile is removed or disallow removing current profile
+- [ ] Check and add windows compatibility
