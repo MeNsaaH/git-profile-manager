@@ -1,19 +1,69 @@
 #! /bin/bash
 
+##############################################################################################################################
+# git remove-profile <username>
+#
+# removes a user profile
+##############################################################################################################################
 set -e
 
 source functions.sh
+use_force=
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+case $key in
+    -f|--force)
+    use_force=1
+    shift 
+    shift
+    ;;
+    *)    
+    echo ""
+      echo 'Usage:'
+      echo '  git remove-profile <username> [-f|--force]'
+      exit
+    shift 
+    ;;
+esac
+done
+
+
+get_current_profile
+current_user=$username
 
 if [ $# -ne 0 ]; then
   username="$1"
 else
-  printf "Username must be passed as argument, for example: git remove-profile bash "
+  printf "Username must be passed as argument "
+  printf "\n\tgit remove-profile bar"
   exit 1
 fi
+
 
 if [ ! -f "$GIT_PROFILE_DIR/$username" ]; then
   echo "Username $1 does not exists. Use 'git create-profile' to create it"
 else
-  rm $GIT_PROFILE_DIR/$username
+  # confirm user profile deletion
+  read -p "Are you sure you want to remove $username profile?: (Y/n)" REPLY
+  REPLY=$(echo "$REPLY" |tr '[:upper:]' '[:lower:]')
+  if [ "$REPLY" != "y" ]; then
+    exit
+  fi
+
+  # IF user is current user, set config to default global config
+  if [ "$username" = "$current_user" ]; then
+    if [ -z "$use_force" ]; then
+      echo "You cannot delete the active user. Add the -f/--force flag to force removal"
+      exit 1
+    else
+      echo "You are deleting the active user, your Current profile will be set to global config"
+      update_profile "global"
+    fi
+  fi
+
+  rm "$GIT_PROFILE_DIR/$username"
   printf "Profile $username deleted"
 fi

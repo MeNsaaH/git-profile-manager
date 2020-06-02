@@ -1,7 +1,6 @@
 # Git Profile Manager
-A git extension to allow you manage multiple git profiles on your workstation
+A git extension to allow you manage multiple git profiles on your workstation. User profiles can have independent configurations. They can also share configurations.
 
-### Do you have a work username/email/sshKey and a conflicting personal username/email/sshKey and want to switch effortlessly between using your two profiles?
 
 ## Installation
 
@@ -19,6 +18,9 @@ Running either of the above commands downloads a script and runs it. The script 
 ```bash
   export GIT_PROFILE_BIN_DIR="$HOME/.gitprofiles/bin"  && \. "$GIT_PROFILE_BIN_DIR/profile-manager.sh" # This loads git-profile-manager
 ```
+
+
+NOTE: After installation, your current git config will be used as a shared configuration. All users inherit from the configuration
 
 ## Usage
 After any commands (aside `current-profile` you have to source your shell environment (bashrc, zshrc) 
@@ -47,6 +49,12 @@ To Configure profile:
 ```
 All git config after setting/creating profiles are stored under the user config. All global configurations are also available to the current profile, so your aliases get to work. In case of same config, the config of the profile is used
 
+#### Global Configuration
+To add configurations that would be shared by all users:
+```bash
+git global-config core.sshCommand "ssh -i /full/path/to/id_rsa"
+```
+User's configuration always override global configuration
 
 ### Switch between Profiles
 To Switch Profile:

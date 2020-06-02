@@ -1,5 +1,10 @@
 #! /bin/bash
 
+##############################################################################################################################
+# git use-profile <username>
+#
+# sets the current profile to a user
+##############################################################################################################################
 set -e
 
 source functions.sh
@@ -15,6 +20,6 @@ fi
 if [ ! -f "$GIT_PROFILE_DIR/$username" ]; then
   echo "Username $1 does not exists. Use 'git create-profile' to create it"
 else
-  update_profile
+  update_profile $username
   printf "Profile Updated\nGit now running as $username"
 fi
