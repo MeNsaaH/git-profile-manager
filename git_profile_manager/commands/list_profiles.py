@@ -1,13 +1,11 @@
 import sys
 import os
 import argparse
-import utils 
-from common_args import parent_parser
+from git_profile_manager import utils 
+from git_profile_manager.common_args import parent_parser
 
 
 def list_profiles(args):
-
-
     current_user = utils.get_current_user()
     all_users = utils.get_all_users()
     for user in all_users:
@@ -18,16 +16,12 @@ def list_profiles(args):
     print("")
         
 
-
-def main():
+def cmd():
     parser = argparse.ArgumentParser(
         description="Parses create-profile arguments",
-        prog="git create-profile",
+        prog="git list-profiles",
         parents=[parent_parser,]
     )
 
     args = parser.parse_args()
     list_profiles(args)
-
-if __name__ == "__main__":
-    main()
