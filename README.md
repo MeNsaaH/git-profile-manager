@@ -1,9 +1,14 @@
 # Git Profile Manager
 A git extension to allow you manage multiple git profiles on your workstation. User profiles can have independent configurations. They can also share configurations.
 
+[![Python 3](https://img.shields.io/badge/python-3-blue)](https://www.python.org/downloads/)
+[![PyPI version](https://badge.fury.io/py/git-profile-manager.png)](https://badge.fury.io/py/git-profile-manager)
+[![Build Status](https://travis-ci.com/mensaah/git-profile-manager.svg?branch=master)](https://travis-ci.com/mensaah/git-profile-manager)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+ 
+<hr/>
 
 ## Installation
-Git Profile Manager is dependent on python 3
 
 ### using Pip
 Git-profile-manager can be installed using the python `pip` tool.
