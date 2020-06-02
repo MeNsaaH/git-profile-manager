@@ -1,51 +1,14 @@
 #! /bin/bash
 
+##############################################################################################################################
+# git create-profile <username>
+#
+# Creates a new profile for a user
+##############################################################################################################################
+
 set -e
 
 source functions.sh
-
-get_variables() {
-  # Create Username
-  if [ -z "$username" ]; then
-    printf "Creating New User \nUsername: "
-    read username
-  else
-    # Basic Setup for most users
-    printf "Creating User $username...\n"
-  fi
-
-  while :
-  do
-
-    if [ -f "$GIT_PROFILE_DIR/$username" ]; then
-      printf "Username already exists. Pick another\nUsername: "
-      # Username can be passed from commandline
-      read username
-    else
-      break
-    fi
-  done
-
-  printf "Enter Name (user.name): "
-  read name
-
-  if [ -z "$email" ]; then
-    printf "Email (user.email): "
-    read email
-  fi
-}
-
-setup(){
-  echo "setting up user profile..."
-  mkdir -p "$GIT_PROFILE_DIR"
-  export GIT_CONFIG="$GIT_PROFILE_DIR/$username"
-  git config user.name "$name"
-  git config user.email "$email"
-
-  #TODO store current config and restore if installation fails
-  update_profile
-  printf "Setup complete\nRunning as $username"
-}
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -63,7 +26,10 @@ case $key in
     shift
     ;;
     *)    
-    POSITIONAL+=("$1") # save it in an array for later
+    printf ""
+      printf 'Usage:'
+      printf'  git create-profile [-u|--username <username>] [-e|--email <email>]'
+      exit
     shift 
     ;;
 esac
@@ -71,5 +37,40 @@ done
 
 set -- "${POSITIONAL[@]}"
 
-get_variables
-setup
+## Get passed parameters and request for those not passed
+# Create Username
+if [ -z "$username" ]; then
+  printf "Creating New User \nUsername: "
+  read username
+else
+  # Basic Setup for most users
+  printf "Creating User $username...\n"
+fi
+
+while :
+do
+
+  if [ -f "$GIT_PROFILE_DIR/$username" ]; then
+    printf "Username already exists. Pick another\nUsername: "
+    # Username can be passed from commandline
+    read username
+  else
+    break
+  fi
+done
+
+read -p "Enter Name (user.name): " name
+
+if [ -z "$email" ]; then
+  read -p "Email (user.email): " email
+fi
+
+
+# Setup User Profile
+printf "Setting up User Profile..."
+export GIT_CONFIG="$GIT_PROFILE_DIR/$username"
+git config user.name "$name"
+git config user.email "$email"
+
+update_profile $username
+printf "Profile Created\nNow running as $username"
