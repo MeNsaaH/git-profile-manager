@@ -1,0 +1,17 @@
+#! /bin/bash
+
+##############################################################################################################################
+# git global-config
+#
+# Set add config to the global config which can be used by all profiles
+##############################################################################################################################
+
+set -e
+
+source functions.sh
+
+export GIT_CONFIG="$GIT_PROFILE_DIR/global"
+git config "$1"
+get_current_profile
+# Update the current profile to reflect
+update_profile $username
