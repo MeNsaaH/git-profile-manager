@@ -7,6 +7,18 @@
 ##############################################################################################################################
 set -e
 
+usage(){
+cat <<EOF
+  Usage:
+    git current-profile
+EOF
+}
+
+if [ $# -gt 0 ]; then
+  usage
+  exit
+fi
+
 source functions.sh
 
 get_current_profile

@@ -1,53 +1,61 @@
 #! /bin/bash
 
 ##############################################################################################################################
-# git remove-profile <username>
+# git remove-profile 
 #
 # removes a user profile
 ##############################################################################################################################
 set -e
 
 source functions.sh
-use_force=
 
-POSITIONAL=()
+usage(){
+cat <<EOF
+  Usage:
+    git remove-profile [-f|--force] USERNAME
+EOF
+}
+
+get_current_profile
+current_user=$username
+
+use_force=
+username=
+
+
+if [[ $# -gt 2 || $# -lt 1 ]]; then
+  usage
+  exit 2
+fi
+
 while [[ $# -gt 0 ]]
 do
 key="$1"
 case $key in
     -f|--force)
-    use_force=1
-    shift 
-    shift
+      use_force=1
+      shift
     ;;
-    *)    
-    echo ""
-      echo 'Usage:'
-      echo '  git remove-profile <username> [-f|--force]'
-      exit
-    shift 
+    *)
+      username=$key
+      shift
     ;;
 esac
 done
 
-
-get_current_profile
-current_user=$username
-
-if [ $# -ne 0 ]; then
-  username="$1"
-else
-  printf "Username must be passed as argument "
-  printf "\n\tgit remove-profile bar"
-  exit 1
+if [ -z "$username" ]; then
+  usage
+  exit
 fi
 
+# Convert username to lowercase
+username=$(echo "$username" |tr '[:upper:]' '[:lower:]')
 
 if [ ! -f "$GIT_PROFILE_DIR/$username" ]; then
   echo "Username $1 does not exists. Use 'git create-profile' to create it"
 else
   # confirm user profile deletion
-  read -p "Are you sure you want to remove $username profile?: (Y/n)" REPLY
+  read -p "Are you sure you want to remove $username profile? (Y/n): " REPLY
   REPLY=$(echo "$REPLY" |tr '[:upper:]' '[:lower:]')
   if [ "$REPLY" != "y" ]; then
     exit

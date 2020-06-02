@@ -7,11 +7,23 @@
 ##############################################################################################################################
 
 set -e
-
 source functions.sh
+
+usage(){
+cat <<EOF
+  Usage:
+    git global-config [CONFIG-OPTS]
+
+    Example
+    git global-config core.sshCommand "ssh -i /path/to/id_rsa"
+
+EOF
+}
+
 
 export GIT_CONFIG="$GIT_PROFILE_DIR/global"
 git config "$1"
+
+# Update the current profile to reflect in it
 get_current_profile
-# Update the current profile to reflect
 update_profile $username
