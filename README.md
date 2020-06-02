@@ -23,14 +23,6 @@ Running either of the above commands downloads a script and runs it. The script 
 NOTE: After installation, your current git config will be used as a shared configuration. All users inherit from the configuration
 
 ## Usage
-After any commands (aside `current-profile` you have to source your shell environment (bashrc, zshrc) 
-
-```bash
-  source ~/.bashrc
-  # If Zsh
-  # source ~/.zshrc
-```
-(Working on a convenience fix for this)
 
 ### Create Profile
 To create a profile
@@ -78,8 +70,8 @@ To get the Current Profile:
 ```
 
 ## TODO
-- [ ] Autosource shell environment after running each command
+- [x] Autosource shell environment after running each command
 - [ ] Add bash completions
 - [ ] Add support for other shells
 - [ ] Add windows support if possible
-- [ ] Unset GIT_CONFIG env if current profile is removed or disallow removing current profile
+- [x] Unset GIT_CONFIG env if current profile is removed or disallow removing current profile
