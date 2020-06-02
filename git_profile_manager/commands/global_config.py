@@ -8,6 +8,11 @@ def global_config(args):
     os.environ["GIT_CONFIG"] = utils.GLOBAL_GITCONFIG
 
     utils.exec_command(["git", "config", args.key, args.config])
+    # After updating config, update the current users configuration aswell
+    current_user = utils.get_current_user()
+    utils.save_current_user_profile()
+    utils.set_active_user(current_user)
+
     print("DONE")
 
 
