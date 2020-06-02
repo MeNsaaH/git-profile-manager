@@ -1,7 +1,7 @@
 #! /bin/bash
 
 ##############################################################################################################################
-# git create-profile <username>
+# git create-profile 
 #
 # Creates a new profile for a user
 ##############################################################################################################################
@@ -10,27 +10,36 @@ set -e
 
 source functions.sh
 
+usage(){
+cat <<EOF
+  Usage:
+    git create-profile [-u|--username USERNAME] [-n|--name NAME] [-e|--email EMAIL]
+EOF
+}
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
 key="$1"
 case $key in
     -u|--user)
-    username="$2"
-    shift 
-    shift
+      username="$2"
+      shift 
+      shift
+    ;;
+    -n|--name)
+      name="$2"
+      shift 
+      shift
     ;;
     -e|--email)
-    email="$2"
-    shift 
-    shift
+      email="$2"
+      shift 
+      shift
     ;;
     *)    
-    printf ""
-      printf 'Usage:'
-      printf'  git create-profile [-u|--username <username>] [-e|--email <email>]'
+      usage
       exit
-    shift 
     ;;
 esac
 done
@@ -59,7 +68,9 @@ do
   fi
 done
 
-read -p "Enter Name (user.name): " name
+if [ -z "$name" ]; then
+  read -p "Enter Name (user.name): " name
+fi
 
 if [ -z "$email" ]; then
   read -p "Email (user.email): " email
@@ -67,10 +78,14 @@ fi
 
 
 # Setup User Profile
-printf "Setting up User Profile..."
+printf "Setting up User Profile...\n"
 export GIT_CONFIG="$GIT_PROFILE_DIR/$username"
 git config user.name "$name"
 git config user.email "$email"
 
+# Convert username to lowercase
+username=$(echo "$username" |tr '[:upper:]' '[:lower:]')
+
 update_profile $username
-printf "Profile Created\nNow running as $username"
+#TODO delete user config file if creation fails using TRAP
+printf "Profile Created\nGit is now running as $username\n"

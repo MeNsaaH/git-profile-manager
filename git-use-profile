@@ -1,21 +1,31 @@
 #! /bin/bash
 
 ##############################################################################################################################
-# git use-profile <username>
+# git use-profile 
 #
 # sets the current profile to a user
 ##############################################################################################################################
 set -e
+
+usage(){
+cat <<EOF
+  Usage:
+    git use-profile USERNAME
+EOF
+}
 
 source functions.sh
 
 if [ $# -ne 0 ]; then
   username="$1"
 else
-  printf "Username must be passed as argument, for example: git use-profile bash "
+  usage
   exit 1
 fi
 
+
+# Convert username to lowercase
+username=$(echo "$username" |tr '[:upper:]' '[:lower:]')
 
 if [ ! -f "$GIT_PROFILE_DIR/$username" ]; then
   echo "Username $1 does not exists. Use 'git create-profile' to create it"
