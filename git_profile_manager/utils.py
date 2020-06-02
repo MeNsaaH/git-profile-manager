@@ -28,17 +28,17 @@ def user_exists(username):
 def user_input(prompt):
     """ User input string for python independent version """
 
-    if sys.version_info >= (3, 0):
-        return input(prompt)
-    return raw_input(prompt)
+    return input(prompt)
 
 def exec_command(command):
+    """ Executes a command and exit if it fails """
     comp = subprocess.run(command)
     if comp.returncode != 0:
         sys.exit(1)
     return comp
 
 def update_current_user(user):
+    """ update PROFILE_RC with to `user` """
     config = configparser.ConfigParser()
     config.read(PROFILE_RC)
     try:
@@ -52,6 +52,10 @@ def update_current_user(user):
 
 
 def set_active_user(user):
+    """ set the current active user
+    This updates GIT_CONFIG with user data and update PROFILE_RC to reflect user is in session
+    """
+
     current_user = get_current_user()
     update_current_user(user)
 
@@ -59,8 +63,6 @@ def set_active_user(user):
     config = configparser.ConfigParser()
     config.read(GLOBAL_GITCONFIG)
     config.read(get_user_config_path(user))
-
-    print(config._sections, GIT_CONFIG)
 
     with open(GIT_CONFIG, "w") as configfile:
         config.write(configfile)
@@ -78,10 +80,16 @@ def get_current_user():
     return current_user
         
 def get_all_users():
+    """ Get all users
+    All files within the GIT_PROFILE_DIR are user data except the .profilerc and global
+    """
     users = [f for f in os.listdir(GIT_PROFILE_DIR) if os.path.isfile(os.path.join(GIT_PROFILE_DIR, f)) and f not in [".profilerc", "global"]]
     return users
 
 def save_current_user_profile():
+    """ Save the config for the current user to personal config
+    If git config had been executed, the GIT_CONFIG file must have changed, update the personal user's config 
+    """
     current_user = get_current_user()
 
     # Remove entries that match in global config
@@ -91,7 +99,7 @@ def save_current_user_profile():
     current_config = configparser.ConfigParser()
     current_config.read(GIT_CONFIG)
 
-    # Delete every matching config in both files
+    # Delete every matching config that exists in global config
     for section in current_config:
         if section in global_config._sections.keys():
             for key, value in current_config[section].items():
@@ -119,4 +127,8 @@ def setup():
 
         if os.path.isfile(GIT_CONFIG):
             shutil.copyfile(GIT_CONFIG, GLOBAL_GITCONFIG)
+        else:
+            # create an empty global config file
+            with open(GLOBAL_GITCONFIG, 'a'):
+                os.utime(GLOBAL_GITCONFIG, None)
 

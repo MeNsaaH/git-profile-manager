@@ -1,6 +1,7 @@
 import setuptools
 from setuptools.command.install import install
 from git_profile_manager.__version__ import __version__
+from git_profile_manager import utils
 
 REQUIRED_PYTHON = (3, 0)
 
@@ -12,7 +13,7 @@ class PostInstallCommand(install):
     def run(self):
         install.run(self)
         # Setup git-profile-manager
-        git_profile_manager.setup()
+        utils.setup()
 
 setuptools.setup(
     name="git-profile-manager",
