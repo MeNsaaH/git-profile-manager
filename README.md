@@ -9,7 +9,10 @@ Git Profile Manager is dependent on python 3
 Git-profile-manager can be installed using the python `pip` tool.
 
 ```bash
-pip install git-profile-manager
+pip3 install git-profile-manager
+
+# pip install git-profile-manager
+
 ````
 
 It can also be installed using install script. To do that, you may either download and run the script manually, or use the following cURL or Wget command:
@@ -49,7 +52,7 @@ To Switch Profile:
   git use-profile foo@bar.com
 ```
 
-### Remove Exisint Profile
+### Remove Existing Profile
 To Remove an existing Profile:
 
 ```bash
@@ -72,3 +75,4 @@ To list the Current Profile:
 ## TODO
 - [ ] Add bash completions
 - [ ] Check and add windows compatibility
+- [ ] Tests
