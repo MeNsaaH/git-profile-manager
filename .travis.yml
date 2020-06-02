@@ -1,0 +1,22 @@
+language: python
+python:
+  - "3.6"
+
+
+# TODO Add tests and code coverage
+script:
+  - python setup.py build
+
+after_success:
+  - python setup.py --version
+
+deploy:
+  provider: pypi
+  user: $PYPI_USER
+  password: $PYPI_PASSWORD
+  on:
+    tags: true
+  skip_existing: true
+
+notifications:
+    email: false
