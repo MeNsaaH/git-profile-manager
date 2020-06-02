@@ -1,7 +1,7 @@
 import os
 import argparse
-import utils 
-from common_args import parent_parser
+from git_profile_manager import utils 
+from git_profile_manager.common_args import parent_parser
 
 
 def current_profile(args):
@@ -9,7 +9,7 @@ def current_profile(args):
     print("Current profile: %s" % current_profile)
 
 
-def main():
+def cmd():
     parser = argparse.ArgumentParser(
         description="Parses current-profile arguments",
         prog="git current-profile",
@@ -18,6 +18,3 @@ def main():
 
     args = parser.parse_args()
     current_profile(args)
-
-if __name__ == "__main__":
-    main()
