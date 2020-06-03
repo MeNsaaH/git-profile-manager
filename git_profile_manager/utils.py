@@ -21,6 +21,11 @@ def get_user_config_path(username):
     """ Get the path to user config """
     return os.path.join(GIT_PROFILE_DIR, username)
 
+
+def get_user_from_config_path(path):
+    """ Get user from path """
+    return os.path.split(path)[-1]
+
 def user_exists(username):
     """ A user exists if the corresponding config file is present """
     return os.path.exists(get_user_config_path(username))
@@ -28,7 +33,7 @@ def user_exists(username):
 def user_input(prompt):
     """ User input string for python independent version """
 
-    return input(prompt)
+    return input(prompt).lower()
 
 def exec_command(command):
     """ Executes a command and exit if it fails """
@@ -137,3 +142,30 @@ def setup():
             with open(GLOBAL_GITCONFIG, 'a'):
                 os.utime(GLOBAL_GITCONFIG, None)
 
+
+def apply_profile(path, username):
+    """ Adds includeIf command to gitconfig for path """
+    path = os.path.abspath(path)
+    print(path)
+    global_config = configparser.ConfigParser()
+    global_config.read(GLOBAL_GITCONFIG)
+
+    user_config_path = get_user_config_path(username)
+    includeIf_key = "includeIf \"gitdir:%s\"" % path
+
+    if not os.path.isdir(path):
+        print("path %s does not exist" % path)
+        return
+
+    if includeIf_key in global_config._sections.keys():
+        path_user = get_user_from_config_path(global_config[includeIf_key]["path"])
+        response = user_input("Path is already configured to use %s, do you want to override (y/N)? " % path_user)
+        if response != "y":
+            print("Path %s configuration skipped" % path)
+            return
+    global_config[includeIf_key] = {}
+    global_config[includeIf_key]["path"] = user_config_path
+
+    with open(GLOBAL_GITCONFIG, "w") as configfile:
+        global_config.write(configfile)
+    print("Path %s configured to use %s config" % (path, username))
