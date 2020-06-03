@@ -62,6 +62,18 @@ To add configurations that would be shared by all users:
 ```
 User's configuration always override global configuration
 
+### Apply profile
+Applies a profile to a particular directory. Once applied, any repository within the directory uses the config. 
+
+```bash
+  # Applies current user profile 
+  git apply-profile /home/user/company
+
+  # Applies specified user profile
+  git apply-profile /home/user/personal -u personal
+```
+implemented using https://git-scm.com/docs/git-config#_conditional_includes
+
 ### Switch between Profiles
 To Switch Profile:
 
