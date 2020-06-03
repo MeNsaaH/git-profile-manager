@@ -62,6 +62,7 @@ def set_active_user(user):
     # load config and override global configuration
     config = configparser.ConfigParser()
     config.read(GLOBAL_GITCONFIG)
+
     config.read(get_user_config_path(user))
 
     with open(GIT_CONFIG, "w") as configfile:
@@ -99,22 +100,26 @@ def save_current_user_profile():
     current_config = configparser.ConfigParser()
     current_config.read(GIT_CONFIG)
 
+    # Use a different config to make modifications. current_config cannot be modified during iteration
+    config = configparser.ConfigParser()
+    config.read(GIT_CONFIG)
+
     # Delete every matching config that exists in global config
     for section in current_config:
         if section in global_config._sections.keys():
             for key, value in current_config[section].items():
                 if key in global_config[section].keys():
                     if value == global_config[section][key]:
-                        del current_config[section][key]
+                        del config[section][key]
 
     # remove sections with no entry
     for section in current_config:
         if section != "DEFAULT" and len(current_config[section].keys()) == 0:
-            del current_config[section]
+            del config[section]
 
     # Write current user config
     with open(get_user_config_path(current_user), "w") as configfile:
-        current_config.write(configfile)
+        config.write(configfile)
 
     
 def setup():

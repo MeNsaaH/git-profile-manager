@@ -18,6 +18,9 @@ pip3 install git-profile-manager
 
 # pip install git-profile-manager
 
+## Upgrade
+pip3 install git-profile-manager --upgrade
+
 ````
 
 It can also be installed using install script. To do that, you may either download and run the script manually, or use the following cURL or Wget command:
