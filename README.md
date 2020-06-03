@@ -44,15 +44,16 @@ To Configure profile:
   # Sets up ssh for that user
   git config --global core.sshCommand "ssh -i /full/path/to/id_a/id_rsa"
 ```
-All git config after setting/creating profiles are stored under the user config. All global configurations are also available to the current profile, so your aliases get to work. In case of same config, the config of the profile is used
-
-NOTE: Running config within a git repository set's the config for that repo. It overrides values set on user config
+NOTE: Git Profile Manager stores the user config as global config. Hence all configurations must carry the `--global` flag. That means running config without the `--global` flag creates a local config that overrides values set on user config
 ```bash
   # Sets up ssh for that user
   # Set config for present repository
-  # This Config overrides the user profile created config
+  # This Config overrides the user profile created config value for core.sshCommand
   git config core.sshCommand "ssh -i /full/path/to/id_a/id_rsa"
 ```
+
+All initial global configurations are added to the user config. For conflicts, the user's config override the global config. 
+
 
 #### Global Configuration
 To add configurations that would be shared by all users:
