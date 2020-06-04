@@ -39,6 +39,7 @@ setuptools.setup(
         'git-use-profile=git_profile_manager.commands.use_profile:cmd',
         'git-global-config=git_profile_manager.commands.global_config:cmd',
         'git-current-profile=git_profile_manager.commands.current_profile:cmd',
+        'git-apply-profile=git_profile_manager.commands.apply_profile:cmd',
     ]},
     classifiers=[
         "Programming Language :: Python :: 3",
