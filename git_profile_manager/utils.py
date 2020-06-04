@@ -17,23 +17,39 @@ PROFILE_RC=os.path.join(GIT_PROFILE_DIR, ".profilerc")
 
 GIT_CONFIG = os.path.join(HOME, '.gitconfig')
 
-def get_user_config_path(username):
+def get_user_config_path(user):
     """ Get the path to user config """
-    return os.path.join(GIT_PROFILE_DIR, username)
+    return os.path.join(GIT_PROFILE_DIR, user)
 
 
 def get_user_from_config_path(path):
     """ Get user from path """
     return os.path.split(path)[-1]
 
-def user_exists(username):
-    """ A user exists if the corresponding config file is present """
-    return os.path.exists(get_user_config_path(username))
 
-def user_input(prompt):
+def user_exists(user, alias=False):
+    """ A user exists if the corresponding config file is present """
+    exists = False
+    config = configparser.ConfigParser()
+    config.read(PROFILE_RC)
+    return user in config["users"].keys() or os.path.exists(get_user_config_path(user))
+
+
+def add_alias(alias, user):
+    """ Add new alias to PROFILE_RC """
+    config = configparser.ConfigParser()
+    config.read(PROFILE_RC)
+    config["users"][alias] = user
+
+    with open(PROFILE_RC, 'w') as configfile:
+        config.write(configfile)
+
+
+def user_input(prompt, lower=True):
     """ User input string for python independent version """
 
-    return input(prompt).lower()
+    r = input(prompt)
+    return r.lower() if lower else r
 
 def exec_command(command):
     """ Executes a command and exit if it fails """
@@ -142,15 +158,26 @@ def setup():
             with open(GLOBAL_GITCONFIG, 'a'):
                 os.utime(GLOBAL_GITCONFIG, None)
 
+    # Create `users` entry in profilerc
+    config = configparser.ConfigParser()
+    config.read(PROFILE_RC)
+    if "users" not in config._sections.keys():
+        config["users"] = {}
 
-def apply_profile(path, username):
+    with open(PROFILE_RC, 'w') as configfile:
+        config.write(configfile)
+
+
+
+
+def apply_profile(path, user):
     """ Adds includeIf command to gitconfig for path """
     path = os.path.abspath(path)
     print(path)
     global_config = configparser.ConfigParser()
     global_config.read(GLOBAL_GITCONFIG)
 
-    user_config_path = get_user_config_path(username)
+    user_config_path = get_user_config_path(user)
     includeIf_key = "includeIf \"gitdir:%s\"" % path
 
     if not os.path.isdir(path):
@@ -168,4 +195,4 @@ def apply_profile(path, username):
 
     with open(GLOBAL_GITCONFIG, "w") as configfile:
         global_config.write(configfile)
-    print("Path %s configured to use %s config" % (path, username))
+    print("Path %s configured to use %s config" % (path, user))
