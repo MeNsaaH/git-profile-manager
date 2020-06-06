@@ -9,8 +9,15 @@ def apply_profile(args):
     """ 
     Apply config to path https://git-scm.com/docs/git-config#_includes
     """
-    if not args.username:
+    if args.username:
+        if not utils.user_exists(args.username):
+            print("User %s does not exist" % args.username)
+            sys.exit(1)
+    else:
         args.username = utils.get_current_user()
+
+    if not utils.is_email(args.username):
+        args.username = utils.get_user_from_alias(args.username)
 
     for d in args.dir:
         utils.apply_profile(d, args.username)
