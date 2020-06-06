@@ -4,6 +4,12 @@ import configparser
 class ConfigParser(configparser.ConfigParser):
     """ Config Parser that writes in git format """
 
+
+    def __init__(self, **kwargs):
+        """ Strict mode does not allow duplicate sections """
+        kwargs["strict"] = False
+        return super().__init__(**kwargs)
+
     def _write_section(self, fp, section_name, section_items, delimiter, indent_values=2):
         """Write a single section to the specified `fp'."""
 
