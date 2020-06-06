@@ -23,8 +23,6 @@ pip3 install git-profile-manager --upgrade
 
 ````
 
-It can also be installed using install script. To do that, you may either download and run the script manually, or use the following cURL or Wget command:
-
 NOTE: After installation, your current git config will be used as a shared configuration. All users inherit from the configuration
 
 ## Usage
@@ -32,10 +30,9 @@ NOTE: After installation, your current git config will be used as a shared confi
 ### Create Profile
 To create a profile
 ```bash
-  git create-profile <username>
+  git create-profile 
 
-  # who says username's are restricted to names, you can use emails
-  git create-profile foo@bar.com
+  git create-profile -e foo@bar.com -n "Foo Bar"
 ```
 
 To Configure profile: 

@@ -19,6 +19,9 @@ def remove_profile(args):
         print("Operation aborted")
         sys.exit(0)
 
+    if not utils.is_email(args.username):
+        args.username = utils.get_user_from_alias(args.username)
+
     if args.username == current_user:
 
         if args.force:
@@ -27,8 +30,8 @@ def remove_profile(args):
 
         else:
             print("You cannot delete the active user. Add the -f/--force flag to force remove") 
-            sys.exit(0)
-    os.remove(utils.get_user_config_path(args.username))
+            sys.exit(1)
+    utils.remove_user(args.username)
     print("Profile %s deleted" % args.username)
 
 def cmd():

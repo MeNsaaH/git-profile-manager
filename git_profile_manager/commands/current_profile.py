@@ -5,7 +5,7 @@ from git_profile_manager.common_args import parent_parser
 
 
 def current_profile(args):
-    current_profile = utils.get_current_user()
+    current_profile = utils.get_current_user(append_name=True)
     print("Current profile: %s" % current_profile)
 
 

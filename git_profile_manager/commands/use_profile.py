@@ -11,6 +11,15 @@ def use_profile(args):
         print("user profile %s does not exist" % args.username)
         sys.exit(1)
 
+    if not utils.is_email(args.username):
+        args.username = utils.get_user_from_alias(args.username)
+        if not args.username:
+            print("Alias does not exist")
+            sys.exit(1)
+        if not utils.config_exists(args.username):
+            print("Could not find config file for %s at %s" % (args.username, utils.get_user_config_path(args.username)))
+            sys.exit(1)
+
     utils.save_current_user_profile()
     utils.set_active_user(args.username)
 
