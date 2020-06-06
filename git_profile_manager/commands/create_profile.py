@@ -15,6 +15,9 @@ def create_profile(args):
     while utils.user_exists(args.email):
         args.email = utils.user_input("Email already exists.\nEnter Email: ")
 
+    while not utils.is_email(args.email):
+        args.email = utils.user_input("Email is invalid.\nEnter Email: ")
+
     while args.alias and utils.user_exists(args.alias, alias=True):
         args.alias = utils.user_input("Alias already exists.\nEnter another alias: ")
 

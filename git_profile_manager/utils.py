@@ -1,10 +1,11 @@
 """ Utility functions """
 
 import os
+import re
 import shutil
-import configparser
 import sys
 import subprocess
+from git_profile_manager import configparser
 
 
 HOME =  os.path.expanduser("~")
@@ -27,22 +28,52 @@ def get_user_from_config_path(path):
     return os.path.split(path)[-1]
 
 
+def get_user_from_alias(alias):
+    """ Returns the user email using the alias """
+    config = configparser.ConfigParser()
+    config.read(PROFILE_RC)
+    return config.get("users", alias, fallback=None)
+
+def get_alias_from_user(user, config=None):
+    """ returns alias for a user """
+    if not config:
+        config = configparser.ConfigParser()
+        config.read(PROFILE_RC)
+
+    if "users" in config._sections.keys():
+        for key, value in config._sections["users"].items():
+            if value == user:
+                return key
+
+
 def user_exists(user, alias=False):
     """ A user exists if the corresponding config file is present """
     exists = False
     config = configparser.ConfigParser()
     config.read(PROFILE_RC)
-    return user in config["users"].keys() or os.path.exists(get_user_config_path(user))
+    return config.get("users", user, fallback=None) or config_exists(user)
+
+
+def config_exists(user):
+    """ Check if config file exists for user """
+    return os.path.exists(get_user_config_path(user))
 
 
 def add_alias(alias, user):
     """ Add new alias to PROFILE_RC """
     config = configparser.ConfigParser()
     config.read(PROFILE_RC)
+    if not "users" in  config._sections.keys():
+        config["users"] = {}
     config["users"][alias] = user
 
     with open(PROFILE_RC, 'w') as configfile:
         config.write(configfile)
+
+
+def is_email(string):
+    email_regex = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    return email_regex.match(string)
 
 
 def user_input(prompt, lower=True):
@@ -51,9 +82,10 @@ def user_input(prompt, lower=True):
     r = input(prompt)
     return r.lower() if lower else r
 
-def exec_command(command):
+
+def exec_command(command, **kwargs):
     """ Executes a command and exit if it fails """
-    comp = subprocess.run(command)
+    comp = subprocess.run(command, capture_output=True, **kwargs)
     if comp.returncode != 0:
         sys.exit(1)
     return comp
@@ -90,16 +122,13 @@ def set_active_user(user):
         config.write(configfile)
 
 
-def get_current_user():
+def get_current_user(append_name=False):
     """ Get the current active user """
-    config = configparser.ConfigParser()
-    config.read(PROFILE_RC)
-    current_user = None
-    try:
-        current_user = config["current"]["user"]
-    except KeyError:
-        pass
-    return current_user
+    email = str(exec_command(["git", "config", "user.email"], universal_newlines=True).stdout).strip("\n")
+    if append_name:
+        name = str(exec_command(["git", "config", "user.name"], universal_newlines=True).stdout).strip("\n")
+        email = "%s (%s)" % (email, name)
+    return email
         
 def get_all_users():
     """ Get all users
@@ -133,14 +162,23 @@ def save_current_user_profile():
                     if value == global_config[section][key]:
                         del config[section][key]
 
-    # remove sections with no entry
-    for section in current_config:
-        if section != "DEFAULT" and len(current_config[section].keys()) == 0:
-            del config[section]
-
     # Write current user config
     with open(get_user_config_path(current_user), "w") as configfile:
         config.write(configfile)
+
+def remove_user(user):
+    config = configparser.ConfigParser()
+    config.read(PROFILE_RC)
+    alias = get_alias_from_user(user)
+    print(alias)
+    if alias:
+        del config["users"][alias]
+        with open(PROFILE_RC, "w") as configfile:
+            config.write(configfile)
+    try:
+        os.remove(get_user_config_path(user))
+    except FileNotFoundError:
+        print("Config for %s not found at %s" % (user, get_user_config_path(user)))
 
     
 def setup():
@@ -166,9 +204,6 @@ def setup():
 
     with open(PROFILE_RC, 'w') as configfile:
         config.write(configfile)
-
-
-
 
 def apply_profile(path, user):
     """ Adds includeIf command to gitconfig for path """
