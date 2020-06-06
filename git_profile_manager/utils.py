@@ -208,7 +208,8 @@ def setup():
 def apply_profile(path, user):
     """ Adds includeIf command to gitconfig for path """
     path = os.path.abspath(path)
-    print(path)
+    if path[-1] != os.path.sep:
+        path += os.path.sep
     global_config = configparser.ConfigParser()
     global_config.read(GLOBAL_GITCONFIG)
 
